@@ -127,3 +127,5 @@ app_license = "MIT"
 # 	"Task": "product_datasheet.task.get_dashboard_data"
 # }
 
+## Fixtures
+fixtures = ["Print Format"]
