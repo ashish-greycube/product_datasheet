@@ -131,6 +131,6 @@ app_license = "MIT"
 fixtures = [
       {
         "dt": "Print Format",
-        "filters": [["name", "in", ["Product DataSheet"]]]
+        "filters": [["name", "in", ["Product DataSheet","PDS-2"]]]
       }
 ]
