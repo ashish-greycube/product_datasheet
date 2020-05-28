@@ -128,4 +128,9 @@ app_license = "MIT"
 # }
 
 ## Fixtures
-fixtures = ["Print Format"]
+fixtures = [
+      {
+        "dt": "Print Format",
+        "filters": [["name", "in", ["Product DataSheet"]]]
+      }
+]
