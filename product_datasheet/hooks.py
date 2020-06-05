@@ -126,7 +126,9 @@ app_license = "MIT"
 # override_doctype_dashboards = {
 # 	"Task": "product_datasheet.task.get_dashboard_data"
 # }
-
+jenv = {
+    "filters": "truncatechars_html:product_datasheet.api.truncatehtml"
+}
 ## Fixtures
 fixtures = [
       {
