@@ -1,0 +1,193 @@
+HTML
+
+{%- macro add_header(page_num, max_pages, doc, letter_head, no_letterhead) -%}
+{% if letter_head and not no_letterhead %}
+<div class="letter-head">{{ letter_head }}</div>
+{% endif %}
+{% if max_pages > 1 %}
+<p class="text-right">{{ _("Page #{0} of {1}").format(page_num, max_pages) }}</p>
+{% endif %}
+{%- endmacro -%}
+<table>
+
+    <div class="row">
+        {{ add_header(0,1,doc,letter_head, no_letterhead) }} </br>
+    </div>
+    <tbody width="100%" class="table table-condensed">
+
+        <tr>
+            {% if doc.brand %}
+            <td width="25%"><strong>Brand:</strong></td>
+            <td width="25%"><strong>{{doc.brand}} </strong></td>
+            {%else%}
+            <td width="25%">&nbsp;</td>
+            <td width="25%">&nbsp;</td>
+            {% endif %}
+            <td width="50%" colspan="2" rowspan="6">
+                {% if doc.website_image %}
+                <img src="{{doc.website_image}}" height="150px" width="200px"></img>
+                {% endif %}
+            </td>
+        </tr>
+        {% if doc.item_name %}
+        <tr>
+            <td><strong>Item Name:</strong></td>
+            <td><strong><u>{{doc.item_name}}</strong></u></td>
+        </tr>
+        {%else%}
+        <tr></tr>
+        {% endif %}
+        {% if doc.item_sku_number_cf %}
+        <tr>
+            <td><strong>Product SKU Number:</strong></td>
+            <td>{{doc.item_sku_number_cf}}</td>
+        </tr>
+        {%else%}
+        <tr></tr>
+        {% endif %}
+        {% if doc.msrp_cf %}
+        <tr>
+            <td><strong>Product MSRP:</strong></td>
+            <td>{{doc.get_formatted("msrp_cf")}}</td>
+        </tr>
+        {%else%}
+        <tr></tr>
+        {% endif %}
+        {% if doc.country_of_origin %}
+        <tr>
+            <td><strong>Country Of Origin:</strong></td>
+            <td>{{doc.country_of_origin}}</td>
+        </tr>
+        {%else%}
+        <tr></tr>
+        {% endif %}
+
+        {% if doc.star_ratings_cf   %}
+        <tr>
+            <td><strong>Star Rating:</strong></td>
+            <td>
+                {% for n in range(5) %}
+                {% if n < doc.star_ratings_cf %}
+                <span class='starproperties star'></span>
+                {% else %}
+                <span class='emptystarproperties emptystar'></span>
+                {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {%else%}
+        <tr></tr>
+        {% endif %}
+
+        {% if doc.slideshow %}
+        <tr>
+            {% for slideshow_item in frappe.get_doc("Website Slideshow",doc.slideshow).slideshow_items %}
+            <td rowspan="2">
+                <img src="{{slideshow_item.image}}" height="100px" width="100px"></img>
+            </td>
+            {% if slideshow_item.idx == 4 %}
+        </tr>
+        <tr> </tr>
+        {% endif %}
+        {% endfor %}
+        </tr>
+        {% endif %}
+        {%if doc.web_long_description %}
+        <tr>
+            <td colspan="4"><strong>Item Website Description:</strong></td>
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align:justify;vertical-align:Top;">
+                {{doc.web_long_description|truncatechars_html(1000)}}</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+
+<table>
+    <tbody>
+        <tr>
+            {% if doc.route %}
+            <td width="25%" style="text-align:center;"><strong>Product Page Public URL</strong></td>
+            {% else %}<td width="25%">&nbsp;</td>
+            {% endif %}
+            {% if doc.barcodes %}
+            <td colspan="2" style="text-align:center;"><strong>Product UPC-A Barcode</strong></td>
+            {% else %}
+            <td width="50%">&nbsp;</td>
+            {% endif %}
+            {% if doc.product_sds_cf %}
+            <td width="25%" style="text-align:center;"><strong>Item Safety Information</strong></td>
+            {% else %}
+            <td width="25%">&nbsp;</td>
+            {% endif %}
+        </tr>
+        <tr>
+            {% if doc.route %}
+            <td rowspan="2" style="text-align:center;"> <img
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{frappe.get_url()}}/{{doc.route}}"
+                    alt="{{doc.route}}" height="150px" width="150px" style="display:inline-block;"></img></td>
+            {% else %}
+            <td rowspan="2">&nbsp;</td>
+            {% endif %}
+            {% if doc.barcodes %}
+            <td colspan="2" rowspan="2" style="text-align:center;"> <img alt='{{doc.barcodes[0].barcode}}'
+                    src='https://barcode.tec-it.com/barcode.ashx?data={{doc.barcodes[0].barcode}}&code=UPCA&dpi=96&dataseparator='
+                    style="display:inline-block;" />
+            </td>
+            {% else %}
+            <td width="50%" rowspan="2">&nbsp;</td>
+            {% endif %}
+            {% if doc.product_sds_cf %}
+            <td rowspan="2" style="text-align:center;"> <img
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{frappe.get_url()}}{{doc.product_sds_cf}}"
+                    alt="{{frappe.get_url()}}{{doc.product_sds_cf}}" height="150px" width="150px"
+                    style="display:inline-block;"></img></td>
+            {% else %}
+            <td rowspan="2">&nbsp;</td>
+            {% endif %}
+        </tr>
+        <tr>
+        </tr>
+    </tbody>
+</table>
+<div id="footer-html" class="visible-pdf">
+    <div class="letter-head-footer" style="text-align:center;">
+        <a href="{{frappe.get_url()}}" alt="{{frappe.get_url()}}">{{frappe.get_url()}}</a>
+    </div>
+</div>
+
+
+=======
+CSS 
+
+=======
+
+.starproperties {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 1.28571429em;
+  text-align: center;
+}
+.star:before {
+  content: "\f005";
+  color:orange !important;
+}
+.emptystarproperties {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 1.28571429em;
+  text-align: center;
+}
+.emptystar:before {
+  content: "\f006";
+  color:orange !important;
+}
